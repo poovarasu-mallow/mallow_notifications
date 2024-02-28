@@ -5,14 +5,13 @@ from faker import Faker
 from mallow_notifications.mailer import EmailMessage
 
 faker = Faker()
-mx = EmailMessage()
-mx.run_asynk_task = (
+mailer = EmailMessage()
+mailer.run_asynk_task = (
     True  # If set to True, it will be sent asynchronously using external celery worker
 )
-mx.from_ = (faker.name(), faker.email())
-mx.to = [faker.email()]
-mx.subject = faker.pystr(min_chars=1, max_chars=180)
-
+mailer.from_ = (faker.name(), faker.email())
+mailer.to = [faker.email()]
+mailer.subject = faker.pystr(min_chars=1, max_chars=180)
 # pylint: disable=invalid-name
 messgae = """<!DOCTYPE html>
 <html lang="en">
@@ -26,5 +25,5 @@ messgae = """<!DOCTYPE html>
     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus at quam ipsa animi reiciendis repudiandae facere exercitationem iusto. Amet debitis consequatur quia veniam inventore eius sint repudiandae perferendis blanditiis accusamus?</p>
 </body>
 </html>"""
-mx.set_content("html", messgae)
-mx.send()
+mailer.set_content("html", messgae)
+mailer.send()

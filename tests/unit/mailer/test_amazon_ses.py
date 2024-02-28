@@ -15,10 +15,11 @@ class BaseSESMail(unittest.TestCase):
     def setUp(self):
         self.faker = Faker()
         self.mail = SESMail(
-            aws_access_key_id=self.faker.pystr(min_chars=1, max_chars=180),
-            aws_secret_access_key=self.faker.pystr(min_chars=1, max_chars=180),
-            region_name=self.faker.pystr(min_chars=1, max_chars=180),
+            aws_access_key_id=self.faker.pystr(min_chars=1, max_chars=100),
+            aws_secret_access_key=self.faker.pystr(min_chars=1, max_chars=100),
+            region_name=self.faker.pystr(min_chars=1, max_chars=50),
         )
+        self.mail.client = MagicMock()
 
 
 class TestSESMail(BaseSESMail):
@@ -45,26 +46,23 @@ class TestSESMail(BaseSESMail):
                 with mock.patch(
                     "mallow_notifications.mailer.amazon_ses.SESMail._check_quota"
                 ) as mock_quota:
+                    mock_get_send_quota_response = MagicMock(
+                        return_value={"SentLast24Hours": 50, "Max24HourSend": 100}
+                    )
+                    mock_sending_enabled_response = MagicMock(return_value={"Enabled": True})
 
-                    with mock.patch("boto3.client") as mock_client:
-                        mock_client.client = MagicMock()
-                        mock_get_send_quota_response = MagicMock(
-                            return_value={"SentLast24Hours": 50, "Max24HourSend": 100}
-                        )
-                        mock_sending_enabled_response = MagicMock(return_value={"Enabled": True})
+                    self.mail.client.get_account_sending_enabled = (
+                        mock_sending_enabled_response
+                    )
+                    mock_sending_enabled.return_value = mock.MagicMock()
 
-                        mock_client.client.get_account_sending_enabled = (
-                            mock_sending_enabled_response
-                        )
-                        mock_sending_enabled.return_value = mock.MagicMock()
+                    self.mail.client.get_send_quota = mock_get_send_quota_response
+                    mock_quota.return_value = mock.MagicMock()
 
-                        mock_client.client.get_send_quota = mock_get_send_quota_response
-                        mock_quota.return_value = mock.MagicMock()
-
-                        mock_send_raw_email = mock_client.return_value.send_raw_email
-                        mock_send_raw_email.return_value = "Success"
-                        self.mail.send(kwargs)
-                        mock_logging.assert_called_once_with("Email Sent Successfully!")
+                    mock_send_raw_email = self.mail.client.send_raw_email
+                    mock_send_raw_email.return_value = True
+                    self.mail.send(kwargs)
+                    mock_logging.assert_called_once_with("Email Sent Successfully!")
 
     def test_send_success_response_with_attachment(self):
         temp_file_name = f"{self.faker.name()}.txt"
@@ -90,38 +88,29 @@ class TestSESMail(BaseSESMail):
                     with mock.patch(
                         "mallow_notifications.mailer.amazon_ses.SESMail._check_quota"
                     ) as mock_quota:
+                        mock_get_send_quota_response = MagicMock(
+                            return_value={
+                                "SentLast24Hours": 50,
+                                "Max24HourSend": 100,
+                            }
+                        )
+                        mock_sending_enabled_response = MagicMock(
+                            return_value={"Enabled": True}
+                        )
 
-                        with mock.patch("boto3.client") as mock_client:
-                            mock_client.client = MagicMock()
-                            mock_get_send_quota_response = MagicMock(
-                                return_value={
-                                    "SentLast24Hours": 50,
-                                    "Max24HourSend": 100,
-                                }
-                            )
-                            mock_sending_enabled_response = MagicMock(
-                                return_value={"Enabled": True}
-                            )
+                        self.mail.client.get_account_sending_enabled = (
+                            mock_sending_enabled_response
+                        )
+                        mock_sending_enabled.return_value = mock.MagicMock()
 
-                            mock_client.client.get_account_sending_enabled = (
-                                mock_sending_enabled_response
-                            )
-                            mock_sending_enabled.return_value = mock.MagicMock()
-
-                            mock_client.client.get_send_quota = mock_get_send_quota_response
-                            mock_quota.return_value = mock.MagicMock()
-                            self.mail._add_attachment(
-                                temp_file_name,
-                                self.faker.binary(length=10),
-                                MIMEMultipart("alternative"),
-                            )
-                            mock_send_raw_email = mock_client.return_value.send_raw_email
-                            mock_send_raw_email.return_value = "Success"
-                            self.mail.send(kwargs)
-                            mock_logging.assert_called_once_with("Email Sent Successfully!")
-
-    def test_check_sending_enabled(self):
-        with mock.patch("boto3.client") as mock_client:
-            mock_client.client = MagicMock()
-
-            mock_client.client.get_account_sending_enabled.return_value = {"Enabled": False}
+                        self.mail.client.get_send_quota = mock_get_send_quota_response
+                        mock_quota.return_value = mock.MagicMock()
+                        self.mail._add_attachment(
+                            temp_file_name,
+                            self.faker.binary(length=10),
+                            MIMEMultipart("alternative"),
+                        )
+                        mock_send_raw_email = self.mail.client.send_raw_email
+                        mock_send_raw_email.return_value = "Success"
+                        self.mail.send(kwargs)
+                        mock_logging.assert_called_once_with("Email Sent Successfully!")

@@ -5,13 +5,10 @@ from pydantic import BaseModel, Field
 
 from mallow_notifications.sns.endpoints.topics import TopicArnSchema
 from mallow_notifications.sns.schema.base import BaseSchema
+from mallow_notifications.base.constants import MessageAttributeDataTypes
 
 
-class MessageAttributeDataTypes(str, Enum):
-    String = "String"
-    StringArray = "String.Array"
-    Number = "Number"
-    Binary = "Binary"
+
 
 
 class MessageAttribute(BaseModel):

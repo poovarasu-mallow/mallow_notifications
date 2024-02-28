@@ -14,10 +14,7 @@ pydantic-settings = "^2.1.0"
 celery = "^5.3.6"
 redis = "^5.0.1"
 coverage = "^7.4.1"
-
-
-[tool.poetry.group.dev.dependencies]
-faker = "^23.1.0"
+faker = "^23.3.0"
 toml = "^0.10.2"
 
 [build-system]

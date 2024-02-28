@@ -6,7 +6,7 @@ mailers, such as SMTP, Amazon SES, and log.
 
 
 import os
-from typing import Optional
+from typing import Optional, Union
 
 from mallow_notifications.base.celery import celery
 from mallow_notifications.base.exceptions import MailError
@@ -22,7 +22,7 @@ settings = Settings()
 logging = get_logger(__name__)
 
 
-def get_mailer(driver, **credentials):
+def get_mailer(driver, **credentials) -> Union[SMTPMail, SESMail, LogMail]:
     """Create and return a mailer based on the specified driver, using the
     provided credentials.
 
@@ -51,7 +51,7 @@ class EmailMessage:
     # pylint: disable=too-many-instance-attributes, dangerous-default-value
     def __init__(
         self,
-        run_asynk_task=False,
+        run_asynk_task: bool = False,
         to: Optional[list] = [],
         from_: Optional[str] = None,
         subject: Optional[str] = None,
@@ -73,7 +73,7 @@ class EmailMessage:
         self.content = {}
         self.attachments = {}
 
-    def set_content(self, content_type: str, content: str):
+    def set_content(self, content_type: str, content: str) -> None:
         """Sets the content for the specified content type.
 
         :param content_type: The type of content to set.
@@ -82,7 +82,7 @@ class EmailMessage:
         """
         self.content[content_type] = content
 
-    def add_attachment(self, file_path: str, filename: Optional[str] = None):
+    def add_attachment(self, file_path: str, filename: Optional[str] = None) -> None:
         """Adds an attachment to the email message.
 
         :param file_path: The path to the attachment file.
@@ -94,7 +94,7 @@ class EmailMessage:
         self.attachments[filename] = file_path
 
     @celery.task(bind=True)
-    def send_email(self, message_content, driver, mailer_credtials):
+    def send_email(self, message_content: dict, driver: str, mailer_credtials: dict) -> None:
         """Send the email using the specified driver and credentials.
 
         :param message_content: A dictionary containing the email

@@ -5,34 +5,11 @@ from pydantic import BaseModel, Field, validator
 
 from mallow_notifications.sns.schema.base import BaseSchema, NextToken
 from mallow_notifications.sns.schema.topics import TopicArnSchema
+from mallow_notifications.base.constants import FilterPolicyScopeEnum, ReplayStatusEnum, ProtocolEnum
 
 
 class SubscriptionArnSchema(BaseSchema):
     SubscriptionArn: str = Field(alias="subscription_arn", min_length=1, max_length=256)
-
-
-class ProtocolEnum(str, Enum):
-    http = "http"
-    https = "https"
-    email = "email"
-    email_json = "email-json"
-    sms = "sms"
-    sqs = "sqs"
-    application = "application"
-    lambda_function = "lambda"
-    firehose = "firehose"
-
-
-class FilterPolicyScopeEnum(str, Enum):
-    message_attributes = "MessageAttributes"
-    message_body = "MessageBody"
-
-
-class ReplayStatusEnum(str, Enum):
-    COMPLETED = "Completed"
-    IN_PROGRESS = "In progress"
-    FAILED = "Failed"
-    PENDING = "Pending"
 
 
 class SubscribeAttributes(BaseModel):

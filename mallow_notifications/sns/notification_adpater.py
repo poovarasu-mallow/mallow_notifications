@@ -29,7 +29,7 @@ def get_driver(service: str):
         service.
     :returns: The driver class for the specified service.
     """
-    if service in ("topic", "subscribe", "email"):
+    if service in ("topic", "email"):
         base = SendTopicMessage
     elif service in ("push", "push_notification"):
         base = SendPushNotification
@@ -46,7 +46,7 @@ class Notification:
     # pylint: disable=too-many-instance-attributes, too-many-arguments, too-many-locals
     def __init__(
         self,
-        run_asynk_task=False,
+        run_asynk_task: bool = False,
         topic_arn: Optional[str] = None,
         target_arn: Optional[str] = None,
         phone_number: Optional[str] = None,

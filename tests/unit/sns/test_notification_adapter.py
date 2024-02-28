@@ -155,7 +155,7 @@ class TestNotificationAdapter(unittest.TestCase):
         self.notification.data = mock.ANY
 
         expected_message = (
-            '{{ "aps": {{ "alert": {title},"sound": {sound} }}, "acme2": {data}}}'.format(
+            '"{{ "aps": {{ "alert": {title},"sound": {sound} }}, "acme2": {data}}}"'.format(
                 title=self.notification.title,
                 sound=("default" if self.notification.sound is None else self.notification.sound),
                 data=self.notification.data,

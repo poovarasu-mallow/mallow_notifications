@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 
 from mallow_notifications.sns.schema.base import BaseSchema, NextToken
+from mallow_notifications.base.constants import DefaultSMSTypeEnum
 
 
 class SMSPhoneNumber(BaseSchema):
@@ -33,11 +34,6 @@ class ListSmsSandboxPhoneNumbersResponse(BaseModel):
 class VerifySMSSandboxPhoneNumberRequest(BaseSchema):
     PhoneNumber: Union[SMSPhoneNumber, str] = Field(alias="phone_number")
     OneTimePassword: str = Field(alias="otp")
-
-
-class DefaultSMSTypeEnum(str, Enum):
-    Promotional = "Promotional"
-    Transactional = "Transactional"
 
 
 class SMSAttributes(BaseModel):

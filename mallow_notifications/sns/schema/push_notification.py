@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Union
 from pydantic import BaseModel, Field
 
 from mallow_notifications.sns.schema.base import BaseSchema, NextToken
+from mallow_notifications.base.constants import Platforms
 
 
 class PlatformApplicationArnSchema(BaseSchema):
@@ -24,16 +25,6 @@ class PlatformApplicationAttributes(BaseSchema):
     SuccessFeedbackSampleRate: Optional[int] = Field(
         ge=0, le=100, alias="success_feedback_sample_rate", default=None
     )
-
-
-class Platforms(str, Enum):
-    ADM = "ADM"
-    Baidu = "Baidu"
-    APNS = "APNS"
-    APNS_SANDBOX = "APNS_SANDBOX"
-    GCM = "GCM"
-    MPNS = "MPNS"
-    WNS = "WNS"
 
 
 class PlatformApplicationRequest(BaseSchema):

@@ -24,7 +24,7 @@ def read_file_data(file_path: str) -> str:
         return toml.load(file) if extension == "toml" else file.read()
 
 
-def generate_random_arn(faker: Faker, name: str, account_id_length: Optional[int] = 12):
+def generate_random_arn(faker: Faker, name: str, account_id_length: Optional[int] = 12) -> str:
     """Generate a random Amazon Resource Name (ARN) for the given name and
     account ID length.
 

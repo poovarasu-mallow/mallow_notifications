@@ -9,7 +9,7 @@ from typing import Optional, Union
 class BaseMail:
     """Mail Base class contains the helper functions for sending emails."""
 
-    def _format_emails_address(self, email_address: Union[str, tuple]):
+    def _format_emails_address(self, email_address: Union[str, tuple]) -> None:
         """Format the email address by adding the name if provided, and return
         the formatted email address.
 
@@ -27,7 +27,7 @@ class BaseMail:
             return parsed
         return f"<{email_address}>"
 
-    def _build_multipart_content(self, email: MIMEMultipart, type_: str, content: str):
+    def _build_multipart_content(self, email: MIMEMultipart, type_: str, content: str) -> None:
         """Build multipart content and attach it to the email.
 
         :param email: The email to attach the content to
