@@ -85,3 +85,10 @@ class ReplayStatusEnum(str, Enum):
     IN_PROGRESS = "In progress"
     FAILED = "Failed"
     PENDING = "Pending"
+
+
+class AmazonSerives(str, Enum):
+    """Enum class for AmazonSerives."""
+
+    SNS = "sns"
+    SES = "ses"

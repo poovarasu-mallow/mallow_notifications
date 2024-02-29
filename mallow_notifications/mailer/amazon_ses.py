@@ -6,6 +6,7 @@ from typing import Optional
 
 import boto3
 
+from mallow_notifications.base.constants import AmazonSerives
 from mallow_notifications.base.exceptions import MailError
 from mallow_notifications.base.logger import get_logger
 from mallow_notifications.mailer.base import BaseMail
@@ -33,7 +34,7 @@ class SESMail(BaseMail):
         self.aws_secret_access_key = aws_secret_access_key
         self.region_name = region_name
         self.client = boto3.client(
-            "ses",
+            AmazonSerives.SES,
             aws_access_key_id=self.aws_access_key_id,
             aws_secret_access_key=self.aws_secret_access_key,
             region_name=self.region_name,

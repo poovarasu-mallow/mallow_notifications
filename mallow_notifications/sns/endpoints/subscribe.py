@@ -98,7 +98,7 @@ class SNSTopicSubscribe(SNSClient):
         ) as e:
             raise NotificationError(e)
 
-    def unsubscribe(self, subscription_arn: Union[SubscriptionArnSchema, Dict[str, str]]):
+    def unsubscribe(self, subscription_arn: Union[SubscriptionArnSchema, Dict[str, str]]) -> None:
         """Deletes a subscription.
 
         If the subscription requires authentication for deletion, only
@@ -202,7 +202,7 @@ class SNSTopicSubscribe(SNSClient):
 
     def set_subscription_attributes(
         self, subscription_attributes: Union[SetSubcribtionAttributesRequest, Dict[str, any]]
-    ):
+    ) -> None:
         """Allows a subscription owner to set an attribute of the subscription
         to a new value."""
         try:

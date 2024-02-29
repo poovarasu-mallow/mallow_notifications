@@ -126,7 +126,7 @@ class SNSTopics(SNSClient):
 
     def set_topic_attributes(
         self, topic_attributes: Union[SetTopicAttributesRequest, Dict[str, any]]
-    ):
+    ) -> None:
         """Allows a topic owner to set an attribute of the topic to a new
         value."""
         try:
